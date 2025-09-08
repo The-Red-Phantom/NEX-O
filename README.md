@@ -1,25 +1,35 @@
-# 🧠 NEX_O_ENGINE – REDPHANTOMOPS's Total Control Editor
+NEX_O_ENGINE — Total Control Editor (How-To)
 
-Welcome to **NEX_O_ENGINE**, the ultimate interactive file control and script editor for your Nexus core environment. This script combines the precision of `nex_o_editor` with the full capabilities of `NEX_O_ENGINE` to give you surgical control over shell, Python, and config files — with logging, validation, and permission handling built in.
+A terminal UI for batch-editing and validating scripts in the current directory. It keeps backups, shows color-coded status/permissions, and lets you mass-validate or chmod files without leaving the screen.
 
-> ⚙️ You don’t just edit files. You **command** them.
+TL;DR
+cd into the folder with your scripts → chmod +x nexo_engine.sh → ./nexo_engine.sh → use numbers to edit, validate all to check everything, perm <sel> <mode> to fix perms, q to bail.
 
----
+1) Requirements
 
-## 📂 What It Does
+OS: GNU/Linux (tested on Bash).
+macOS note: stat -c "%a" is GNU-specific; on macOS you’ll need gstat from coreutils or adapt the command.
 
-- 🔍 Scans for `.sh`, `.py`, `.json`, `.conf`, `.cfg`, and `.txt` files in the current working directory
-- 🧠 Provides a full-screen interactive editor menu using your preferred `$EDITOR` (`nano` by default)
-- 🔐 Validates Bash and Python syntax pre-deployment
-- 🪖 Color-codes validation status (green/yellow/red) per file
-- 🧾 Tracks edits with timestamped backups
-- 🧰 Allows permission management (`chmod`) per file
-- 📜 Persists validation state across sessions
+Tools: bash, find, stat, awk, grep, timeout, readlink, sort, command -v.
 
----
+Editor: nano by default; respects $EDITOR (e.g., export EDITOR=vim).
 
-## 🛠️ Usage
+2) What it indexes (and what it ignores)
 
-```bash
-./NEX_O_EDITOR.sh
+Included: regular, non-hidden files in $PWD (not recursive).
 
+Ignored: directories and dotfiles (anything starting with .).
+
+Tip: If you want recursion or hidden files, that’s a code change—by design it stays shallow to avoid chaos.
+
+3) Safety nets & where stuff goes
+
+Backups: every edit makes a copy at .edit_backups/<filename>-<epoch>.bak
+
+Logs: directory .edit_logs/ is created (currently unused by the script—future expansion).
+
+Status file: .validation_status is created (currently not written—future expansion).
+
+Validation runs code: see §6 (important).
+
+4) Quickstart
