@@ -228,4 +228,3 @@ while true; do
   # "validate" or "perm" did nothing.
   read -rp "Press Enter to continue..." _
 done
-
